@@ -1,0 +1,12 @@
+*.class
+*.log
+.DS_STORE
+target/
+project/project/
+project/target/
+project/metals.sbt
+logs/
+.bsp/
+.metals/
+.vscode/
+sbt-launch.jar
