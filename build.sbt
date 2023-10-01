@@ -24,7 +24,7 @@ lazy val root = (project in file("."))
         scalaVersion := "3.3.1",
       )
     ),
-    name           := "zio-scala-3-project",
+    name                    := "zio-scala-3-project",
     libraryDependencies ++= Seq(
       "io.getquill"   %% "quill-jdbc-zio"      % quillVersion excludeAll (
         ExclusionRule(organization = "org.scala-lang.modules")
@@ -51,7 +51,11 @@ lazy val root = (project in file("."))
       "com.dimafeng" %% "testcontainers-scala-postgresql" % testContainersVersion % Test,
       "dev.zio"      %% "zio-test-magnolia"               % zioVersion            % Test,
     ),
-    testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework")),
+    testFrameworks          := Seq(new TestFramework("zio.test.sbt.ZTestFramework")),
+    scalacOptions ++= Seq(
+      // define any compiler options here
+    ),
+    Compile / doc / sources := Seq.empty,
   )
   .dependsOn(quillNamingStrategy)
-  .enablePlugins(JavaAppPackaging)
+  .enablePlugins(JavaAppPackaging, UniversalPlugin)
