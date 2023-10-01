@@ -9,6 +9,13 @@ val postgresqlVersion     = "42.6.0"
 val testContainersVersion = "0.41.0"
 val zioMockVersion        = "1.0.0-RC11"
 
+lazy val quillNamingStrategy =
+  (project in file("quill"))
+    .settings(
+      name                                  := "zioapp-quill",
+      libraryDependencies ++= "io.getquill" %% "quill-jdbc-zio" % quillVersion :: Nil,
+    )
+
 lazy val root = (project in file("."))
   .settings(
     inThisBuild(
@@ -46,4 +53,5 @@ lazy val root = (project in file("."))
     ),
     testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework")),
   )
+  .dependsOn(quillNamingStrategy)
   .enablePlugins(JavaAppPackaging)
