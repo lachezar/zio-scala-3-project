@@ -1,23 +1,23 @@
-val zioVersion            = "2.0.13"
-val zioJsonVersion        = "0.5.0"
+val zioVersion            = "2.0.18"
+val zioHttpVersion        = "3.0.0-RC2"
+val zioJsonVersion        = "0.6.2"
 val zioConfigVersion      = "3.0.7"
-val zioLoggingVersion     = "2.1.11"
-val logbackClassicVersion = "1.4.7"
+val zioLoggingVersion     = "2.1.14"
+val logbackClassicVersion = "1.4.11"
+val quillVersion          = "4.7.3"
 val postgresqlVersion     = "42.6.0"
-val testContainersVersion = "0.40.15"
+val testContainersVersion = "0.41.0"
 val zioMockVersion        = "1.0.0-RC11"
-val zioHttpVersion        = "3.0.0-RC1"
-val quillVersion          = "4.6.0.1"
 
 lazy val root = (project in file("."))
   .settings(
     inThisBuild(
       List(
         organization := "se.yankov",
-        scalaVersion := "3.2.2",
+        scalaVersion := "3.3.1",
       )
     ),
-    name           := "zio-scala3-quickstart",
+    name           := "zio-scala-3-project",
     libraryDependencies ++= Seq(
       "io.getquill"   %% "quill-jdbc-zio"      % quillVersion excludeAll (
         ExclusionRule(organization = "org.scala-lang.modules")

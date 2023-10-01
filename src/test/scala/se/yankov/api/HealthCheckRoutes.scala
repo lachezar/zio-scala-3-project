@@ -1,9 +1,10 @@
 package se.yankov.api
 
 import se.yankov.api.healthcheck.HealthCheckServiceTest
-import zio.http._
-import zio.test._
-import zio.test.Assertion._
+import zio.http.*
+import zio.http.Path.*
+import zio.test.*
+import zio.test.Assertion.*
 
 object HealthCheckRoutesSpec extends ZIOSpecDefault:
 
@@ -11,7 +12,7 @@ object HealthCheckRoutesSpec extends ZIOSpecDefault:
     suite("health check")(
       test("ok status") {
         val actual =
-          HealthCheckRoutes.app.runZIO(Request.get(URL(!! / "healthcheck")))
+          HealthCheckRoutes.app.runZIO(Request.get(URL(Root / "healthcheck")))
         assertZIO(actual)(equalTo(Response(Status.Ok, Headers.empty, Body.empty)))
       }
     )

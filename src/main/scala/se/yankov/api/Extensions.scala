@@ -1,9 +1,9 @@
 package se.yankov.api
 
 import se.yankov.domain.ValidationError
-import zio._
-import zio.http._
-import zio.json._
+import zio.*
+import zio.http.*
+import zio.json.*
 
 private[api] object Extensions:
 

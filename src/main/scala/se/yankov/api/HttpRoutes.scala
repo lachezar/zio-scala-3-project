@@ -5,20 +5,21 @@ import java.nio.charset.StandardCharsets
 import se.yankov.api.Extensions._
 import se.yankov.application.ItemService
 import se.yankov.domain._
-import zio._
-import zio.http._
-import zio.json._
+import zio.*
+import zio.http.*
+import zio.http.Path.*
+import zio.json.*
 
 object HttpRoutes extends JsonSupport:
 
   val app: HttpApp[ItemRepository, Nothing] = Http.collectZIO {
-    case Method.GET -> !! / "items" =>
+    case Method.GET -> Root / "items" =>
       val effect: ZIO[ItemRepository, DomainError, List[Item]] =
         ItemService.getAllItems()
 
       effect.foldZIO(Utils.handleError, _.toResponseZIO)
 
-    case Method.GET -> !! / "items" / itemId =>
+    case Method.GET -> Root / "items" / itemId =>
       val effect: ZIO[ItemRepository, DomainError, Item] =
         for {
           id        <- Utils.extractLong(itemId)
@@ -30,7 +31,7 @@ object HttpRoutes extends JsonSupport:
 
       effect.foldZIO(Utils.handleError, _.toResponseZIO)
 
-    case Method.DELETE -> !! / "items" / itemId =>
+    case Method.DELETE -> Root / "items" / itemId =>
       val effect: ZIO[ItemRepository, DomainError, Unit] =
         for {
           id     <- Utils.extractLong(itemId)
@@ -41,7 +42,7 @@ object HttpRoutes extends JsonSupport:
 
       effect.foldZIO(Utils.handleError, _.toEmptyResponseZIO)
 
-    case req @ Method.POST -> !! / "items" =>
+    case req @ Method.POST -> Root / "items" =>
       val effect: ZIO[ItemRepository, DomainError, Item] =
         for {
           createItem <- req.jsonBodyAs[CreateItemRequest]
@@ -50,7 +51,7 @@ object HttpRoutes extends JsonSupport:
 
       effect.foldZIO(Utils.handleError, _.toResponseZIO(Status.Created))
 
-    case req @ Method.PUT -> !! / "items" / itemId =>
+    case req @ Method.PUT -> Root / "items" / itemId =>
       val effect: ZIO[ItemRepository, DomainError, Item] =
         for {
           id         <- Utils.extractLong(itemId)
@@ -63,7 +64,7 @@ object HttpRoutes extends JsonSupport:
 
       effect.foldZIO(Utils.handleError, _.toResponseZIO)
 
-    case req @ Method.PATCH -> !! / "items" / itemId =>
+    case req @ Method.PATCH -> Root / "items" / itemId =>
       val effect: ZIO[ItemRepository, DomainError, Item] =
         for {
           id                <- Utils.extractLong(itemId)

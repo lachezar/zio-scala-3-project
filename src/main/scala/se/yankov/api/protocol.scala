@@ -1,7 +1,7 @@
 package se.yankov.api
 
 import se.yankov.domain.{ Item, ItemId }
-import zio.json._
+import zio.json.*
 
 final case class UpdateItemRequest(name: String, price: BigDecimal)
 final case class PartialUpdateItemRequest(name: Option[String], price: Option[BigDecimal])
