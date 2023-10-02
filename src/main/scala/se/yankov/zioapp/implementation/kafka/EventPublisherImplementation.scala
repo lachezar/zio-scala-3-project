@@ -12,6 +12,8 @@ import domain.events.*
 import domain.item.Item
 
 final case class EventPublisherImplementation(kafkaConfig: KafkaConfig, producer: Producer) extends EventPublisher:
+
+  @SuppressWarnings(Array("org.wartremover.warts.Null"))
   override def sendNewItemEvent(item: Item): IO[EventError, Unit] =
     zio
       .Clock

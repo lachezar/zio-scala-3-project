@@ -5,7 +5,6 @@ import zio.*
 import zio.http.*
 import zio.http.Header.HeaderType
 
-import api.PrivateApiHandler
 import domain.ValidationStatus
 import domain.item.{ CreateItemInput, UpdateItemInput }
 import implementation.json.ItemCodecs.given
@@ -17,7 +16,7 @@ object PrivateApi:
     Http.collectZIO[Request] {
       case req @ Method.POST -> Root / "items"        =>
         req
-          .parseRequest[CreateItemInput[ValidationStatus.Unvalidated.type]]
+          .parseRequest[CreateItemInput[ValidationStatus.NonValidated.type]]
           .flatMap(input => ZIO.serviceWithZIO[PrivateApiHandler](_.createItem(req.authHeader, input)))
           .toJsonResponse
           .handleErrors
@@ -25,7 +24,7 @@ object PrivateApi:
         ZIO.serviceWithZIO[PrivateApiHandler](_.getItem(req.authHeader, id)).toJsonResponse.handleErrors
       case req @ Method.PUT -> Root / "items" / id    =>
         req
-          .parseRequest[UpdateItemInput[ValidationStatus.Unvalidated.type]]
+          .parseRequest[UpdateItemInput[ValidationStatus.NonValidated.type]]
           .flatMap(input => ZIO.serviceWithZIO[PrivateApiHandler](_.updateItem(req.authHeader, id, input)))
           .toJsonResponse
           .handleErrors

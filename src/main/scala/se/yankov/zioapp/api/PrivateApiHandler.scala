@@ -14,7 +14,7 @@ import java.util.UUID
 
 final case class PrivateApiHandler(authService: AuthService, itemService: ItemService):
 
-  def createItem(authHeader: Option[String], input: CreateItemInput[ValidationStatus.Unvalidated.type])
+  def createItem(authHeader: Option[String], input: CreateItemInput[ValidationStatus.NonValidated.type])
       : IO[AuthError | RepositoryError.DbEx | RepositoryError.Conflict | RepositoryError.ConversionError | EventError | NonEmptyChunk[ItemValidationError], ItemResult] =
     for {
       _              <- authService.validateJwt(authHeader.getOrElse(""))
@@ -22,10 +22,11 @@ final case class PrivateApiHandler(authService: AuthService, itemService: ItemSe
       item           <- itemService.addItem(validatedInput)
     } yield ItemResult.fromDomain(item)
 
-  def updateItem(authHeader: Option[String], id: String, input: UpdateItemInput[ValidationStatus.Unvalidated.type]): IO[
-    AuthError | RequestError | RepositoryError.DbEx | RepositoryError.MissingEntity | RepositoryError.ConversionError | NonEmptyChunk[ItemValidationError],
-    ItemResult,
-  ] =
+  def updateItem(authHeader: Option[String], id: String, input: UpdateItemInput[ValidationStatus.NonValidated.type])
+      : IO[
+        AuthError | RequestError | RepositoryError.DbEx | RepositoryError.MissingEntity | RepositoryError.ConversionError | NonEmptyChunk[ItemValidationError],
+        ItemResult,
+      ] =
     for {
       _              <- authService.validateJwt(authHeader.getOrElse(""))
       itemId         <- ZIO.attempt(UUID.fromString(id)).mapBoth(err => RequestError(Some(err.getMessage)), ItemId(_))

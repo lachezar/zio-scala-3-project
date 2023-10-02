@@ -21,8 +21,9 @@ object QuillCodecs:
   given [T]: Encoder[Option[JsonbValue[T]]] = JdbcEncoder[Option[JsonbValue[T]]](
     Types.OTHER,
     (index, value, row, _) => {
-      if (value.isEmpty) row.setObject(index, null, Types.OTHER)
-      else row.setObject(index, value.get.value, Types.OTHER)
+      @SuppressWarnings(Array("org.wartremover.warts.Null"))
+      val obj = value.fold(null)(_.value)
+      row.setObject(index, obj, Types.OTHER)
       row
     },
   )

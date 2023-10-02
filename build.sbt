@@ -69,3 +69,5 @@ lazy val root = (project in file("."))
   .enablePlugins(JavaAppPackaging, UniversalPlugin)
 
 addCommandAlias("fmt", "all scalafmtSbt scalafmtAll")
+
+wartremoverErrors ++= Warts.unsafe diff Seq(Wart.Any, Wart.DefaultArguments)

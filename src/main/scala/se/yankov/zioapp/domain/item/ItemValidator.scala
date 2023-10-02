@@ -25,7 +25,7 @@ object ItemValidator:
       .left
       .map(_ => ItemValidationError.InvalidItemProductType())
 
-  def validate(input: CreateItemInput[ValidationStatus.Unvalidated.type])
+  def validate(input: CreateItemInput[ValidationStatus.NonValidated.type])
       : Either[NonEmptyChunk[ItemValidationError], CreateItemInput[ValidationStatus.Validated.type]] =
     Validation
       .validateWith(
@@ -35,7 +35,7 @@ object ItemValidator:
       )(CreateItemInput[ValidationStatus.Validated.type].apply)
       .toEither
 
-  def validate(input: UpdateItemInput[ValidationStatus.Unvalidated.type])
+  def validate(input: UpdateItemInput[ValidationStatus.NonValidated.type])
       : Either[NonEmptyChunk[ItemValidationError], UpdateItemInput[ValidationStatus.Validated.type]] =
     Validation
       .validateWith(
