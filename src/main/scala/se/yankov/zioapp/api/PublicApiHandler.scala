@@ -16,7 +16,8 @@ final case class PublicApiHandler(itemService: ItemService):
   def listItems: IO[RepositoryError.DbEx, List[ItemResult]] =
     itemService.getAllItems.map(_.map(ItemResult.fromDomain(_)))
 
-  def getItem(id: String): IO[RepositoryError.DbEx | RepositoryError.MissingEntity | RequestError, ItemResult] =
+  def getItem(id: String)
+      : IO[RepositoryError.DbEx | RepositoryError.MissingEntity | RepositoryError.ConversionError | RequestError, ItemResult] =
     ZIO
       .attempt(UUID.fromString(id))
       .mapError(err => RequestError(Some(err.getMessage)))

@@ -14,15 +14,17 @@ import java.util.UUID
 final case class PrivateApiHandler(authService: AuthService, itemService: ItemService):
 
   def createItem(authHeader: Option[String], input: CreateItemInput[ValidationStatus.Unvalidated.type])
-      : IO[AuthError | RepositoryError.DbEx | RepositoryError.Conflict | NonEmptyChunk[ItemValidationError], ItemResult] =
+      : IO[AuthError | RepositoryError.DbEx | RepositoryError.Conflict | RepositoryError.ConversionError | NonEmptyChunk[ItemValidationError], ItemResult] =
     for {
       _              <- authService.validateJwt(authHeader.getOrElse(""))
       validatedInput <- ZIO.fromEither(ItemValidator.validate(input))
       item           <- itemService.addItem(validatedInput)
     } yield ItemResult.fromDomain(item)
 
-  def updateItem(authHeader: Option[String], id: String, input: UpdateItemInput[ValidationStatus.Unvalidated.type])
-      : IO[AuthError | RequestError | RepositoryError.DbEx | RepositoryError.MissingEntity | NonEmptyChunk[ItemValidationError], ItemResult] =
+  def updateItem(authHeader: Option[String], id: String, input: UpdateItemInput[ValidationStatus.Unvalidated.type]): IO[
+    AuthError | RequestError | RepositoryError.DbEx | RepositoryError.MissingEntity | RepositoryError.ConversionError | NonEmptyChunk[ItemValidationError],
+    ItemResult,
+  ] =
     for {
       _              <- authService.validateJwt(authHeader.getOrElse(""))
       itemId         <- ZIO.attempt(UUID.fromString(id)).mapBoth(err => RequestError(Some(err.getMessage)), ItemId(_))
@@ -39,7 +41,7 @@ final case class PrivateApiHandler(authService: AuthService, itemService: ItemSe
         .flatMap(id => itemService.deleteItem(ItemId(id)))
 
   def getItem(authHeader: Option[String], id: String)
-      : IO[AuthError | RepositoryError.DbEx | RepositoryError.MissingEntity | RequestError, ItemResult] =
+      : IO[AuthError | RepositoryError.DbEx | RepositoryError.MissingEntity | RepositoryError.ConversionError | RequestError, ItemResult] =
     authService.validateJwt(authHeader.getOrElse("")) *>
       ZIO
         .attempt(UUID.fromString(id))

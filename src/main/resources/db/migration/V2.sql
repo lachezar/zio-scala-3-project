@@ -1,0 +1,1 @@
+ALTER TABLE IF EXISTS public.item ADD COLUMN product_type text NOT NULL;

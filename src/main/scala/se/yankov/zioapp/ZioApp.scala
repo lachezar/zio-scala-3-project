@@ -8,11 +8,7 @@ import zio.http.netty.NettyConfig
 import zio.logging.backend.SLF4J
 
 import api.*
-import api.PrivateApiHandler
-import api.PublicApi
-import api.PublicApiHandler
-import domain.item.ItemService
-import implementation.postgres.ItemRepositoryImplementation
+import implementation.postgres.Migration
 
 object ZioApp extends ZIOAppDefault:
 
@@ -47,12 +43,11 @@ object ZioApp extends ZIOAppDefault:
       )
 
   override val run: UIO[ExitCode] =
-    ZIO
-      .raceFirst(publicApiProgram(1337), privateApiProgram(1338) :: internalApiProgram(1339) :: Nil)
+    (Migration.run *> ZIO.raceFirst(publicApiProgram(1337), privateApiProgram(1338) :: internalApiProgram(1339) :: Nil))
       .provide(
         (Runtime.removeDefaultLoggers >>> SLF4J.slf4j) ++
-          AppConfig.layer >>>
-          implementation.layer >+> domain.layer >>> (PublicApiHandler.layer ++ PrivateApiHandler.layer ++ InternalApiHandler.layer)
+          AppConfig.layer >+>
+          (implementation.layer >+> domain.layer >>> (PublicApiHandler.layer ++ PrivateApiHandler.layer ++ InternalApiHandler.layer))
       )
       .foldCauseZIO(
         error => ZIO.logError(s"Program failed: ${error.squash.getMessage}") *> ZIO.succeed(ExitCode.failure),

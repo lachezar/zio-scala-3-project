@@ -7,6 +7,7 @@ val zioLoggingVersion     = "2.1.14"
 val logbackClassicVersion = "1.4.11"
 val quillVersion          = "4.7.3"
 val postgresqlVersion     = "42.6.0"
+val flywayVersion         = "9.22.2"
 val chimneyVersion        = "0.8.0-RC1"
 val testContainersVersion = "0.41.0"
 val zioMockVersion        = "1.0.0-RC11"
@@ -32,6 +33,7 @@ lazy val root = (project in file("."))
         ExclusionRule(organization = "org.scala-lang.modules")
       ),
       "org.postgresql" % "postgresql"          % postgresqlVersion,
+      "org.flywaydb"   % "flyway-core"         % flywayVersion,
       "dev.zio"       %% "zio"                 % zioVersion,
       "dev.zio"       %% "zio-streams"         % zioVersion,
       "dev.zio"       %% "zio-http"            % zioHttpVersion,
