@@ -1,13 +1,14 @@
 package se.yankov.infrastructure
 
-import se.yankov.domain._
-import se.yankov.infrastructure.postgresql._
-import io.getquill.Literal
-import io.getquill.jdbczio.Quill
 import zio._
 import zio.test._
 import zio.test.Assertion._
 import zio.test.TestAspect._
+
+import io.getquill.Literal
+import io.getquill.jdbczio.Quill
+import se.yankov.domain._
+import se.yankov.infrastructure.postgresql._
 
 object ItemRepositoryLiveSpec extends ZIOSpecDefault:
 

@@ -47,7 +47,7 @@ final class ItemRepositoryImplementation(dataSource: DataSource) extends ItemRep
         case _ => ZIO.unit
       }
 
-  override def getAll(): IO[RepositoryError.DbEx, List[Item]] =
+  override def getAll: IO[RepositoryError.DbEx, List[Item]] =
     DbContext
       .run(query[ItemEntity])
       .implicitDS
@@ -60,7 +60,7 @@ final class ItemRepositoryImplementation(dataSource: DataSource) extends ItemRep
       .mapError(_.toDbEx)
       .flatMap(i => ZIO.fromOption(i.headOption.map(_.toDomain)).orElseFail(RepositoryError.MissingEntity()))
 
-  override def update(id: ItemId, data: UpdateItemInput)
+  override def update(id: ItemId, data: UpdateItemInput[ValidationStatus.Validated.type])
       : IO[RepositoryError.DbEx | RepositoryError.MissingEntity, Item] =
     DbContext
       .run {

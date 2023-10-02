@@ -1,8 +1,9 @@
 package se.yankov.infrastructure
 
-import se.yankov.domain._
 import zio._
 import zio.mock._
+
+import se.yankov.domain._
 
 object ItemRepoMock extends Mock[ItemRepository]:
   object Add     extends Effect[ItemData, Nothing, ItemId]

@@ -1,7 +1,8 @@
 package se.yankov.infrastructure
 
-import se.yankov.domain._
 import zio._
+
+import se.yankov.domain._
 
 final class InMemoryItemRepository(
     random: Random,

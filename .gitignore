@@ -12,4 +12,3 @@ logs/
 postgres-data/
 sbt-launch.jar
 .env
-.sbtopts

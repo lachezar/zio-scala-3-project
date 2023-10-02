@@ -1,6 +1,7 @@
 val zioVersion            = "2.0.18"
 val zioHttpVersion        = "3.0.0-RC2"
 val zioJsonVersion        = "0.6.2"
+val zioPreludeVersion     = "1.0.0-RC21"
 val zioConfigVersion      = "3.0.7"
 val zioLoggingVersion     = "2.1.14"
 val logbackClassicVersion = "1.4.11"
@@ -40,6 +41,7 @@ lazy val root = (project in file("."))
       "ch.qos.logback" % "logback-classic"     % logbackClassicVersion,
       "dev.zio"       %% "zio-json"            % zioJsonVersion,
       "io.scalaland"  %% "chimney"             % chimneyVersion,
+      "dev.zio"       %% "zio-prelude"         % zioPreludeVersion,
 
       // logging
       "dev.zio"       %% "zio-logging"       % zioLoggingVersion,
@@ -62,3 +64,5 @@ lazy val root = (project in file("."))
   )
   .dependsOn(quillNamingStrategy)
   .enablePlugins(JavaAppPackaging, UniversalPlugin)
+
+addCommandAlias("fmt", "all scalafmtSbt scalafmtAll")

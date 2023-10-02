@@ -14,7 +14,7 @@ final case class PublicApiHandler(itemService: ItemService):
   def health: UIO[String] = ZIO.succeed("ok")
 
   def listItems: IO[RepositoryError.DbEx, List[ItemResult]] =
-    itemService.getAllItems().map(_.map(ItemResult.fromDomain(_)))
+    itemService.getAllItems.map(_.map(ItemResult.fromDomain(_)))
 
   def getItem(id: String): IO[RepositoryError.DbEx | RepositoryError.MissingEntity | RequestError, ItemResult] =
     ZIO

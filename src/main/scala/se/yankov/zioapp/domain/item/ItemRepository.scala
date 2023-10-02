@@ -12,11 +12,11 @@ trait ItemRepository:
 
   def delete(id: ItemId): IO[DbEx | MissingEntity, Unit]
 
-  def getAll(): IO[DbEx, List[Item]]
+  def getAll: IO[DbEx, List[Item]]
 
   def getById(id: ItemId): IO[DbEx | MissingEntity, Item]
 
-  def update(id: ItemId, data: UpdateItemInput): IO[DbEx | MissingEntity, Item]
+  def update(id: ItemId, data: UpdateItemInput[ValidationStatus.Validated.type]): IO[DbEx | MissingEntity, Item]
 
 object ItemRepository:
 
@@ -26,11 +26,12 @@ object ItemRepository:
   def delete(id: ItemId): ZIO[ItemRepository, DbEx | MissingEntity, Unit] =
     ZIO.serviceWithZIO[ItemRepository](_.delete(id))
 
-  def getAll(): ZIO[ItemRepository, DbEx, List[Item]] =
-    ZIO.serviceWithZIO[ItemRepository](_.getAll())
+  def getAll: ZIO[ItemRepository, DbEx, List[Item]] =
+    ZIO.serviceWithZIO[ItemRepository](_.getAll)
 
   def getById(id: ItemId): ZIO[ItemRepository, DbEx | MissingEntity, Item] =
     ZIO.serviceWithZIO[ItemRepository](_.getById(id))
 
-  def update(id: ItemId, data: UpdateItemInput): ZIO[ItemRepository, DbEx | MissingEntity, Item] =
+  def update(id: ItemId, data: UpdateItemInput[ValidationStatus.Validated.type])
+      : ZIO[ItemRepository, DbEx | MissingEntity, Item] =
     ZIO.serviceWithZIO[ItemRepository](_.update(id, data))

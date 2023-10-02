@@ -4,6 +4,8 @@ package api
 import zio.*
 import zio.http.*
 
+import api.PublicApiHandler
+
 object PublicApi:
 
   val api: Http[PublicApiHandler, Nothing, Request, Response] =

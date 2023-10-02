@@ -1,13 +1,14 @@
 package se.yankov.service
 
-import se.yankov.application.ItemService._
-import se.yankov.domain._
-import se.yankov.infrastructure._
 import zio._
 import zio.mock.Expectation._
 import zio.stream._
 import zio.test._
 import zio.test.Assertion._
+
+import se.yankov.application.ItemService._
+import se.yankov.domain._
+import se.yankov.infrastructure._
 
 object ItemServiceSpec extends ZIOSpecDefault:
 

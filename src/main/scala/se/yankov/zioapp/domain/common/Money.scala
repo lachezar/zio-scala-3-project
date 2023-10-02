@@ -8,7 +8,10 @@ object Money:
   def apply(value: BigDecimal): Money = value
   def apply(value: Int): Money        = BigDecimal(value)
 
-  extension (money: Money) def value: BigDecimal = money
+  extension (money: Money)
+    def value: BigDecimal       = money
+    def <(that: Money): Boolean = value < that.value
+    def >(that: Money): Boolean = value > that.value
 
   given Opq[BigDecimal, Money] with
     def pack(value: BigDecimal): Money                = apply(value)

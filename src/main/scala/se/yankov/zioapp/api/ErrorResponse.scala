@@ -1,14 +1,23 @@
 package se.yankov.zioapp
 package api
 
+import zio.NonEmptyChunk
 import zio.http.*
 import zio.json.*
+
+import domain.GenericValidationError
 
 @jsonDiscriminator("$type")
 sealed trait ErrorResponse
 
 object ErrorResponse:
-  final case class GenericErrorResponse(message: String) extends ErrorResponse
+  final case class GenericErrorResponse(message: String)                            extends ErrorResponse
+  final case class ValidationErrorsResponse(errors: NonEmptyChunk[ValidationError]) extends ErrorResponse
+
+  def fromValidationErrors(errors: NonEmptyChunk[GenericValidationError]): Response =
+    Response
+      .json(ValidationErrorsResponse(errors.map(e => ValidationError(e.getClass.getSimpleName, e.getMessage))).toJson)
+      .copy(status = Status.BadRequest)
 
   lazy val unauthorized: Response        =
     Response.json(GenericErrorResponse("Unauthorized").toJson).copy(status = Status.Unauthorized)
@@ -19,5 +28,6 @@ object ErrorResponse:
   lazy val internalServerError: Response =
     Response.json(GenericErrorResponse("Internal server error").toJson).copy(status = Status.InternalServerError)
 
-  given JsonEncoder[GenericErrorResponse] = DeriveJsonEncoder.gen[GenericErrorResponse]
-  given JsonEncoder[ErrorResponse]        = DeriveJsonEncoder.gen[ErrorResponse]
+  given JsonEncoder[ValidationErrorsResponse] = DeriveJsonEncoder.gen[ValidationErrorsResponse]
+  given JsonEncoder[GenericErrorResponse]     = DeriveJsonEncoder.gen[GenericErrorResponse]
+  given JsonEncoder[ErrorResponse]            = DeriveJsonEncoder.gen[ErrorResponse]

@@ -1,10 +1,11 @@
 package se.yankov.api
 
-import se.yankov.api.healthcheck.HealthCheckServiceTest
 import zio.http.*
 import zio.http.Path.*
 import zio.test.*
 import zio.test.Assertion.*
+
+import se.yankov.api.healthcheck.HealthCheckServiceTest
 
 object HealthCheckRoutesSpec extends ZIOSpecDefault:
 

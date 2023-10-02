@@ -8,32 +8,13 @@ import zio.http.netty.NettyConfig
 import zio.logging.backend.SLF4J
 
 import api.*
+import api.PrivateApiHandler
+import api.PublicApi
+import api.PublicApiHandler
 import domain.item.ItemService
 import implementation.postgres.ItemRepositoryImplementation
 
 object ZioApp extends ZIOAppDefault:
-
-  // override val bootstrap: ULayer[Unit] = Runtime.removeDefaultLoggers >>> SLF4J.slf4j
-
-  // private val dataSourceLayer = Quill.DataSource.fromPrefix("db")
-
-  // private val postgresLayer = Quill.Postgres.fromNamingStrategy(Literal)
-
-  // private val repoLayer = ItemRepositoryImplementation.layer
-
-  // private val healthCheckServiceLayer = HealthCheckServiceLive.layer
-
-  // private val serverLayer =
-  //   ZLayer
-  //     .service[ApiConfig]
-  //     .flatMap { cfg =>
-  //       Server.defaultWith(_.binding(cfg.get.host, cfg.get.port))
-  //     }
-  //     .orDie
-
-  // val routes = HttpRoutes.app ++ HealthCheckRoutes.app
-
-  // private val program = Server.serve(routes)
 
   private def publicApiProgram(port: Int): RIO[PublicApiHandler, Nothing] =
     (ZIO.serviceWithZIO[PublicApiHandler](handlers => Server.install(PublicApi.api.withDefaultErrorResponse)) *>
@@ -45,12 +26,33 @@ object ZioApp extends ZIOAppDefault:
           Server.customized
       )
 
+  private def privateApiProgram(port: Int): RIO[PrivateApiHandler, Nothing] =
+    (ZIO.serviceWithZIO[PrivateApiHandler](handlers => Server.install(PrivateApi.api.withDefaultErrorResponse)) *>
+      ZIO.logDebug(s"Private API server started on port $port") *>
+      ZIO.never)
+      .provideSomeLayer(
+        ZLayer.succeed(Server.Config.default.port(port)) ++
+          ZLayer.succeed(NettyConfig.default.leakDetection(NettyConfig.LeakDetectionLevel.PARANOID)) >>>
+          Server.customized
+      )
+
+  private def internalApiProgram(port: Int): RIO[InternalApiHandler, Nothing] =
+    (ZIO.serviceWithZIO[InternalApiHandler](handlers => Server.install(InternalApi.api.withDefaultErrorResponse)) *>
+      ZIO.logDebug(s"Internal API server started on port $port") *>
+      ZIO.never)
+      .provideSomeLayer(
+        ZLayer.succeed(Server.Config.default.port(port)) ++
+          ZLayer.succeed(NettyConfig.default.leakDetection(NettyConfig.LeakDetectionLevel.PARANOID)) >>>
+          Server.customized
+      )
+
   override val run: UIO[ExitCode] =
-    publicApiProgram(1337)
+    ZIO
+      .raceFirst(publicApiProgram(1337), privateApiProgram(1338) :: internalApiProgram(1339) :: Nil)
       .provide(
         (Runtime.removeDefaultLoggers >>> SLF4J.slf4j) ++
           AppConfig.layer >>>
-          implementation.layer >>> domain.layer >>> PublicApiHandler.layer
+          implementation.layer >+> domain.layer >>> (PublicApiHandler.layer ++ PrivateApiHandler.layer ++ InternalApiHandler.layer)
       )
       .foldCauseZIO(
         error => ZIO.logError(s"Program failed: ${error.squash.getMessage}") *> ZIO.succeed(ExitCode.failure),

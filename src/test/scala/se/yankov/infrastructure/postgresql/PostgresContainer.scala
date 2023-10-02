@@ -1,8 +1,9 @@
 package se.yankov.infrastructure.postgresql
 
+import zio._
+
 import com.dimafeng.testcontainers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
-import zio._
 
 object PostgresContainer:
 

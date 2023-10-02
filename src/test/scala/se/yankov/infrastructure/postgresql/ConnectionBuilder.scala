@@ -1,11 +1,12 @@
 package se.yankov.infrastructure.postgresql
 
+import zio._
+
 import javax.sql.DataSource
 
 import com.dimafeng.testcontainers.PostgreSQLContainer
 import io.getquill.context.ZioJdbc.DataSourceLayer
 import org.postgresql.ds.PGSimpleDataSource
-import zio._
 
 trait DataSourceBuilder:
   def dataSource: DataSource
