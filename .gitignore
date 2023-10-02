@@ -9,4 +9,7 @@ logs/
 .bsp/
 .metals/
 .vscode/
+postgres-data/
 sbt-launch.jar
+.env
+.sbtopts

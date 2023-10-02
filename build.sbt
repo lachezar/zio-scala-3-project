@@ -6,6 +6,7 @@ val zioLoggingVersion     = "2.1.14"
 val logbackClassicVersion = "1.4.11"
 val quillVersion          = "4.7.3"
 val postgresqlVersion     = "42.6.0"
+val chimneyVersion        = "0.8.0-RC1"
 val testContainersVersion = "0.41.0"
 val zioMockVersion        = "1.0.0-RC11"
 
@@ -35,8 +36,10 @@ lazy val root = (project in file("."))
       "dev.zio"       %% "zio-http"            % zioHttpVersion,
       "dev.zio"       %% "zio-config"          % zioConfigVersion,
       "dev.zio"       %% "zio-config-typesafe" % zioConfigVersion,
+      "dev.zio"       %% "zio-config-magnolia" % zioConfigVersion,
       "ch.qos.logback" % "logback-classic"     % logbackClassicVersion,
       "dev.zio"       %% "zio-json"            % zioJsonVersion,
+      "io.scalaland"  %% "chimney"             % chimneyVersion,
 
       // logging
       "dev.zio"       %% "zio-logging"       % zioLoggingVersion,

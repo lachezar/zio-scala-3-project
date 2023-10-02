@@ -1,0 +1,15 @@
+package se.yankov.zioapp
+package domain
+package common
+
+opaque type Money = BigDecimal
+
+object Money:
+  def apply(value: BigDecimal): Money = value
+  def apply(value: Int): Money        = BigDecimal(value)
+
+  extension (money: Money) def value: BigDecimal = money
+
+  given Opq[BigDecimal, Money] with
+    def pack(value: BigDecimal): Money                = apply(value)
+    extension (wrapper: Money) def unpack: BigDecimal = wrapper.value
