@@ -6,6 +6,7 @@ import zio.http.*
 import zio.json.*
 
 import domain.*
+import domain.events.EventError
 import domain.item.*
 import implementation.auth.AuthError
 import implementation.json.JsonDecodingError
@@ -26,7 +27,8 @@ extension [R](
     effect: ZIO[
       R,
       AuthError | RequestError | JsonDecodingError | RepositoryError.DbEx | RepositoryError.Conflict |
-        RepositoryError.MissingEntity | RepositoryError.ConversionError | NonEmptyChunk[GenericValidationError],
+        RepositoryError.MissingEntity | RepositoryError.ConversionError | EventError |
+        NonEmptyChunk[GenericValidationError],
       Response,
     ]
   )

@@ -13,3 +13,14 @@ services:
       - POSTGRES_DB=items
     ports:
       - "5433:5432"
+
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v23.2.10
+    command:
+      - redpanda
+      - start
+      - --smp
+      - '1'
+      - --overprovisioned
+    ports:
+      - 9092:9092

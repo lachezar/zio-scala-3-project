@@ -7,13 +7,14 @@ import zio.config.syntax.*
 import zio.config.toKebabCase
 import zio.config.typesafe.TypesafeConfig
 
+import implementation.kafka.KafkaConfig
 import implementation.postgres.DbConfig
 
 import scala.io.Source
 
-type ConfigEnv = DbConfig
+type ConfigEnv = DbConfig & KafkaConfig
 
-final case class AppConfig(db: DbConfig)
+final case class AppConfig(db: DbConfig, kafka: KafkaConfig)
 
 object AppConfig:
   val layer: TaskLayer[ConfigEnv] =
@@ -22,5 +23,5 @@ object AppConfig:
         val configLayer = TypesafeConfig
           .fromHoconString(content.get, descriptor[AppConfig].mapKey(toKebabCase))
           .mapError(e => new RuntimeException(e.prettyPrint()))
-        configLayer.narrow(_.db)
+        configLayer.narrow(_.db) ++ configLayer.narrow(_.kafka)
       )

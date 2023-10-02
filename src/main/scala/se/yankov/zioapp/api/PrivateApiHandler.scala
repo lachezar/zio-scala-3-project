@@ -6,6 +6,7 @@ import zio.*
 import api.PrivateApiHandler
 import api.item.*
 import domain.*
+import domain.events.EventError
 import domain.item.*
 import implementation.auth.*
 
@@ -14,7 +15,7 @@ import java.util.UUID
 final case class PrivateApiHandler(authService: AuthService, itemService: ItemService):
 
   def createItem(authHeader: Option[String], input: CreateItemInput[ValidationStatus.Unvalidated.type])
-      : IO[AuthError | RepositoryError.DbEx | RepositoryError.Conflict | RepositoryError.ConversionError | NonEmptyChunk[ItemValidationError], ItemResult] =
+      : IO[AuthError | RepositoryError.DbEx | RepositoryError.Conflict | RepositoryError.ConversionError | EventError | NonEmptyChunk[ItemValidationError], ItemResult] =
     for {
       _              <- authService.validateJwt(authHeader.getOrElse(""))
       validatedInput <- ZIO.fromEither(ItemValidator.validate(input))

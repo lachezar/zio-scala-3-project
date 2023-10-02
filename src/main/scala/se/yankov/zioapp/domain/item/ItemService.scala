@@ -4,21 +4,25 @@ package item
 
 import zio.*
 
+import domain.events.*
+
 import io.scalaland.chimney.dsl.*
 
-final case class ItemService(itemRepo: ItemRepository):
+final case class ItemService(itemRepo: ItemRepository, eventPublisher: EventPublisher):
 
   def addItem(input: CreateItemInput[ValidationStatus.Validated.type])
-      : IO[RepositoryError.DbEx | RepositoryError.Conflict | RepositoryError.ConversionError, Item] =
-    zio.Random.nextUUID.flatMap { uuid =>
-      itemRepo.add(
-        input
-          .into[Item]
-          .withFieldConst(_.id, ItemId(uuid))
-          .withFieldComputed(_.productType, i => ProductType.valueOf(i.productType))
-          .transform
-      )
-    }
+      : IO[RepositoryError.DbEx | RepositoryError.Conflict | RepositoryError.ConversionError | EventError, Item] =
+    for {
+      uuid <- zio.Random.nextUUID
+      item <- itemRepo.add(
+                input
+                  .into[Item]
+                  .withFieldConst(_.id, ItemId(uuid))
+                  .withFieldComputed(_.productType, i => ProductType.valueOf(i.productType))
+                  .transform
+              )
+      _    <- eventPublisher.sendNewItemEvent(item)
+    } yield item
 
   def deleteItem(id: ItemId): IO[RepositoryError.DbEx | RepositoryError.MissingEntity, Unit] = itemRepo.delete(id)
 
@@ -34,7 +38,7 @@ final case class ItemService(itemRepo: ItemRepository):
 
 object ItemService:
   def addItem(input: CreateItemInput[ValidationStatus.Validated.type])
-      : ZIO[ItemService, RepositoryError.DbEx | RepositoryError.Conflict | RepositoryError.ConversionError, Item] =
+      : ZIO[ItemService, RepositoryError.DbEx | RepositoryError.Conflict | RepositoryError.ConversionError | EventError, Item] =
     ZIO.serviceWithZIO[ItemService](_.addItem(input))
 
   def deleteItem(id: ItemId): ZIO[ItemService, RepositoryError.DbEx | RepositoryError.MissingEntity, Unit] =
@@ -51,4 +55,4 @@ object ItemService:
       : ZIO[ItemService, RepositoryError.DbEx | RepositoryError.MissingEntity | RepositoryError.ConversionError, Item] =
     ZIO.serviceWithZIO[ItemService](_.updateItem(id, input))
 
-  def layer: RLayer[ItemRepository, ItemService] = ZLayer.derive[ItemService]
+  def layer: RLayer[ItemRepository & EventPublisher, ItemService] = ZLayer.derive[ItemService]
