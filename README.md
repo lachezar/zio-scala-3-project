@@ -34,23 +34,23 @@ You can start the Kafka (Redpanda) and Postgres using `docker compose up` and th
 Create an item:
 
 ```
-curl -v --data '{"name":"lego", "price": 24.95, "productType":"Toys"}' -H "Authorization: Bearer tokenhere" localhost:1338/items
+curl -v --data '{"name":"lego", "price": 24.95, "productType":"Toys"}' -H "Authorization: Bearer tokenhere" -H "Content-Type: application/json" localhost:1338/items
 ```
 
 View an item by id:
 
 ```
-curl -v -H "Authorization: Bearer tokenhere" localhost:1338/items/<ITEM ID HERE>
+curl -v -H "Authorization: Bearer tokenhere" -H "Content-Type: application/json" localhost:1338/items/<ITEM ID HERE>
 ```
 
 Update an item by id:
 
 ```
-curl -v -X PUT --data '{"name":"Gameboy", "price": 199.95, "productType":"Electronics"}' -H "Authorization: Bearer tokenhere" localhost:1338/items/<ITEM ID HERE>
+curl -v -X PUT --data '{"name":"Gameboy", "price": 199.95, "productType":"Electronics"}' -H "Authorization: Bearer tokenhere" -H "Content-Type: application/json" localhost:1338/items/<ITEM ID HERE>
 ```
 
 Delete an item by id:
 
 ```
-curl -v -X DELETE -H "Authorization: Bearer tokenhere" localhost:1338/items/<ITEM ID HERE>
+curl -v -X DELETE -H "Authorization: Bearer tokenhere" -H "Content-Type: application/json" localhost:1338/items/<ITEM ID HERE>
 ```

@@ -36,7 +36,11 @@ object PrivateApiSpec extends ZIOSpecDefault:
           TestRandom.feedUUIDs(uuid0) *>
             PrivateApi
               .api
-              .runZIO(Request.post(Body.fromString(createItemInput.toJson), URL(Root / "items")))
+              .runZIO(
+                Request
+                  .post(Body.fromString(createItemInput.toJson), URL(Root / "items"))
+                  .addHeader(Header.ContentType(MediaType.application.json))
+              )
         assertZIO(actual.map(_.status))(equalTo(Status.Unauthorized))
       },
       test("create item") {
@@ -48,6 +52,7 @@ object PrivateApiSpec extends ZIOSpecDefault:
                 Request
                   .post(Body.fromString(createItemInput.toJson), URL(Root / "items"))
                   .addHeader(Header.Authorization.Bearer("token"))
+                  .addHeader(Header.ContentType(MediaType.application.json))
               )
         assertZIO(actual)(equalTo(Response.json(ItemResult.fromDomain(item).toJson)))
       },
@@ -55,7 +60,12 @@ object PrivateApiSpec extends ZIOSpecDefault:
         val actual =
           PrivateApi
             .api
-            .runZIO(Request.get(URL(Root / "items" / uuid0.toString)).addHeader(Header.Authorization.Bearer("token")))
+            .runZIO(
+              Request
+                .get(URL(Root / "items" / uuid0.toString))
+                .addHeader(Header.Authorization.Bearer("token"))
+                .addHeader(Header.ContentType(MediaType.application.json))
+            )
         assertZIO(actual)(equalTo(Response.json(ItemResult.fromDomain(item).toJson)))
       },
       test("delete item") {
@@ -63,7 +73,10 @@ object PrivateApiSpec extends ZIOSpecDefault:
           PrivateApi
             .api
             .runZIO(
-              Request.delete(URL(Root / "items" / uuid0.toString)).addHeader(Header.Authorization.Bearer("token"))
+              Request
+                .delete(URL(Root / "items" / uuid0.toString))
+                .addHeader(Header.Authorization.Bearer("token"))
+                .addHeader(Header.ContentType(MediaType.application.json))
             )
         assertZIO(actual)(equalTo(Response.json(().toJson)))
       },

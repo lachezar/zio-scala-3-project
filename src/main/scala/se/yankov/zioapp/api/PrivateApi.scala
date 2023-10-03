@@ -3,7 +3,6 @@ package api
 
 import zio.*
 import zio.http.*
-import zio.http.Header.HeaderType
 
 import domain.ValidationStatus
 import domain.item.{ CreateItemInput, UpdateItemInput }
@@ -30,7 +29,7 @@ object PrivateApi:
           .handleErrors
       case req @ Method.DELETE -> Root / "items" / id =>
         ZIO.serviceWithZIO[PrivateApiHandler](_.deleteItem(req.authHeader, id)).toJsonResponse.handleErrors
-    }
+    } @@ requireContentType
 
   extension (req: Request)
     def authHeader: Option[String] = req.headers(Header.Authorization).headOption.map(_.renderedValue)

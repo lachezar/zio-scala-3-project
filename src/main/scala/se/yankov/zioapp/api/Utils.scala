@@ -3,6 +3,7 @@ package api
 
 import zio.*
 import zio.http.*
+import zio.http.HttpAppMiddleware.Allow
 import zio.json.*
 
 import domain.*
@@ -50,3 +51,6 @@ extension [R](
       case err: RepositoryError.MissingEntity         => ZIO.succeed(ErrorResponse.notFound)
       case err                                        => ZIO.succeed(ErrorResponse.internalServerError)
     }
+
+val requireContentType: HttpAppMiddleware[Nothing, Any, Nothing, Any] =
+  Allow(()).apply(req => req.headers.get(Header.ContentType).exists(_.mediaType == MediaType.application.json))

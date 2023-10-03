@@ -13,4 +13,4 @@ object InternalApi:
     Http.collectZIO[Request] {
       case Method.DELETE -> Root / "items" =>
         ZIO.serviceWithZIO[InternalApiHandler](_.deleteAllItems).toJsonResponse.handleErrors
-    }
+    } @@ requireContentType
