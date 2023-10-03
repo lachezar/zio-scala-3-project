@@ -28,3 +28,29 @@ Currently there is no way to define OpenAPI specification for the web APIs, sinc
 ## How to run it
 
 You can start the Kafka (Redpanda) and Postgres using `docker compose up` and then start the application with `sbt run`. You might need to adjust the configuration of the project using a `.env` file (see the `.env.example`) or editing the `src/main/resource/application.conf`.
+
+## Example usage
+
+Create an item:
+
+```
+curl -v --data '{"name":"lego", "price": 24.95, "productType":"Toys"}' -H "Authorization: Bearer tokenhere" localhost:1338/items
+```
+
+View an item by id:
+
+```
+curl -v -H "Authorization: Bearer tokenhere" localhost:1338/items/<ITEM ID HERE>
+```
+
+Update an item by id:
+
+```
+curl -v -X PUT --data '{"name":"Gameboy", "price": 199.95, "productType":"Electronics"}' -H "Authorization: Bearer tokenhere" localhost:1338/items/<ITEM ID HERE>
+```
+
+Delete an item by id:
+
+```
+curl -v -X DELETE -H "Authorization: Bearer tokenhere" localhost:1338/items/<ITEM ID HERE>
+```
