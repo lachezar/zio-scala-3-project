@@ -5,12 +5,33 @@ package postgres
 import zio.*
 
 import com.dimafeng.testcontainers.PostgreSQLContainer
+import org.postgresql.ds.PGSimpleDataSource
+import org.testcontainers.utility.DockerImageName
 
-val containerLayer = ZLayer.scoped(PostgresContainer.make())
+val containerLayer: TaskLayer[PostgreSQLContainer] = ZLayer.scoped(
+  ZIO.acquireRelease {
+    ZIO.attempt {
+      val imageName = "postgres:alpine"
+      val c         = new PostgreSQLContainer(
+        dockerImageNameOverride = Option(imageName).map(DockerImageName.parse)
+      )
+      c.start()
+      c
+    }
+  } { container =>
+    ZIO.attempt(container.stop()).orDie
+  }
+)
 
-val dataSourceBuilderLayer = DataSourceBuilder.layer
-
-val dataSourceLayer = ZLayer(ZIO.service[DataSourceBuilder].map(_.dataSource))
+val dataSourceLayer: URLayer[PostgreSQLContainer, PGSimpleDataSource] = ZLayer(
+  ZIO.service[PostgreSQLContainer].map { container =>
+    val ds = new PGSimpleDataSource()
+    ds.setUrl(container.jdbcUrl)
+    ds.setUser(container.username)
+    ds.setPassword(container.password)
+    ds
+  }
+)
 
 val dbConfigLayer: URLayer[PostgreSQLContainer, DbConfig] =
   ZLayer(ZIO.service[PostgreSQLContainer].map(c => DbConfig(c.driverClassName, c.jdbcUrl, c.username, c.password, 5)))

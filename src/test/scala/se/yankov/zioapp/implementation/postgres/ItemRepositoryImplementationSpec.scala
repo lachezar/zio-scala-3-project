@@ -71,7 +71,6 @@ object ItemRepositoryImplementationSpec extends ZIOSpecDefault:
   ) @@ sequential @@ beforeAll(Migration.run)).provideShared(
     containerLayer,
     dbConfigLayer,
-    dataSourceBuilderLayer,
     dataSourceLayer,
     ItemRepositoryImplementation.layer,
   )
