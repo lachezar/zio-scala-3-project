@@ -1,21 +1,20 @@
-package se.yankov.infrastructure.postgresql
+package se.yankov.zioapp
+package implementation
+package postgres
 
-import zio._
+import zio.*
 
 import com.dimafeng.testcontainers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
 
 object PostgresContainer:
 
-  def make(imageName: String = "postgres:alpine") =
+  def make(imageName: String = "postgres:alpine"): RIO[Scope, PostgreSQLContainer] =
     ZIO.acquireRelease {
       ZIO.attempt {
         val c = new PostgreSQLContainer(
           dockerImageNameOverride = Option(imageName).map(DockerImageName.parse)
-        ).configure { a =>
-          a.withInitScript("item_schema.sql")
-          ()
-        }
+        )
         c.start()
         c
       }
