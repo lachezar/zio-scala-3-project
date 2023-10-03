@@ -13,6 +13,6 @@ given jsonCodecBigDecimal[Out](using opq: Opq[BigDecimal, Out]): JsonCodec[Out] 
   JsonCodec[BigDecimal].transform(opq.pack, _.unpack)
 
 given JsonEncoder[Unit] = new JsonEncoder[Unit] {
-  override def unsafeEncode(a: Unit, indent: Option[Int], out: Write): Unit = ()
+  override def unsafeEncode(a: Unit, indent: Option[Int], out: Write): Unit = out.write(Json.Obj().toString)
   override def toJsonAST(a: Unit): Either[String, Json]                     = Right(Json.Obj())
 }

@@ -21,10 +21,10 @@ This project can be used as a starting point for a ZIO 2 + Scala 3 web service w
 - sbt-tpolecat (good scala compiler options defaults)
 - sbt-wartremover (linter)
 
-## What is missing
+## What is missing?
 
 Currently there is no way to define OpenAPI specification for the web APIs, since zio-http does not have support for this (see https://github.com/zio/zio-http/issues/1520 and https://github.com/zio/zio-http/issues/1498). It is possible to use Tapir if OpenAPI specification is a must.
 
-## How to run
+## How to run it
 
 You can start the Kafka (Redpanda) and Postgres using `docker compose up` and then start the application with `sbt run`. You might need to adjust the configuration of the project using a `.env` file (see the `.env.example`) or editing the `src/main/resource/application.conf`.

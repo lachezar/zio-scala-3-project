@@ -14,5 +14,5 @@ object Money:
     def >(that: Money): Boolean = value > that.value
 
   given Opq[BigDecimal, Money] with
-    def pack(value: BigDecimal): Money                = apply(value)
-    extension (wrapper: Money) def unpack: BigDecimal = wrapper.value
+    def pack(value: BigDecimal): Money              = value
+    extension (value: Money) def unpack: BigDecimal = value
