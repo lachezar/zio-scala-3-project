@@ -27,8 +27,5 @@ object PublicApiSpec extends ZIOSpecDefault:
     PublicApiHandler.layer,
     ItemService.layer,
     InMemoryItemRepository.layer,
-    eventPublisherMock,
+    EventPublisherMock.optionalMockLayer,
   )
-
-  val eventPublisherMock: ULayer[EventPublisher] =
-    EventPublisherMock.SendNewItemEvent(anything, Expectation.value(())).optional

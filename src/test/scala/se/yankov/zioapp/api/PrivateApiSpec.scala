@@ -88,8 +88,5 @@ object PrivateApiSpec extends ZIOSpecDefault:
     AuthService.layer,
     ItemService.layer,
     InMemoryItemRepository.layer,
-    eventPublisherMock,
+    EventPublisherMock.optionalMockLayer,
   )
-
-  val eventPublisherMock: ULayer[EventPublisher] =
-    EventPublisherMock.SendNewItemEvent(anything, Expectation.value(())).optional
