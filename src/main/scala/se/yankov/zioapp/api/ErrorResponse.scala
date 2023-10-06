@@ -8,11 +8,12 @@ import zio.json.*
 import domain.GenericValidationError
 
 @jsonDiscriminator("$type")
-sealed trait ErrorResponse
+sealed trait ErrorResponse derives JsonEncoder
 
 object ErrorResponse:
-  final case class GenericErrorResponse(message: String)                            extends ErrorResponse
+  final case class GenericErrorResponse(message: String)                            extends ErrorResponse derives JsonEncoder
   final case class ValidationErrorsResponse(errors: NonEmptyChunk[ValidationError]) extends ErrorResponse
+      derives JsonEncoder
 
   def fromValidationErrors(errors: NonEmptyChunk[GenericValidationError]): Response =
     Response
@@ -27,7 +28,3 @@ object ErrorResponse:
   lazy val conflict: Response            = Response.json(GenericErrorResponse("Conflict").toJson).copy(status = Status.Conflict)
   lazy val internalServerError: Response =
     Response.json(GenericErrorResponse("Internal server error").toJson).copy(status = Status.InternalServerError)
-
-  given JsonEncoder[ValidationErrorsResponse] = DeriveJsonEncoder.gen[ValidationErrorsResponse]
-  given JsonEncoder[GenericErrorResponse]     = DeriveJsonEncoder.gen[GenericErrorResponse]
-  given JsonEncoder[ErrorResponse]            = DeriveJsonEncoder.gen[ErrorResponse]

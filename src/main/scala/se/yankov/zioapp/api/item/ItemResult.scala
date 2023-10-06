@@ -11,9 +11,7 @@ import implementation.json.given
 
 import io.scalaland.chimney.dsl.*
 
-final case class ItemResult(id: ItemId, name: String, price: Money, productType: ProductType)
+final case class ItemResult(id: ItemId, name: String, price: Money, productType: ProductType) derives JsonCodec
 
 object ItemResult:
   def fromDomain(item: Item): ItemResult = item.transformInto[ItemResult]
-
-  given JsonCodec[ItemResult] = DeriveJsonCodec.gen[ItemResult]

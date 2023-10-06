@@ -8,9 +8,7 @@ import zio.json.internal.Write
 
 import java.util.UUID
 
-given jsonCodecUUID[Out](using opq: Opq[UUID, Out]): JsonCodec[Out]             = JsonCodec[UUID].transform(opq.pack, _.unpack)
-given jsonCodecBigDecimal[Out](using opq: Opq[BigDecimal, Out]): JsonCodec[Out] =
-  JsonCodec[BigDecimal].transform(opq.pack, _.unpack)
+given [In, Out](using opq: Opq[In, Out], codec: JsonCodec[In]): JsonCodec[Out] = codec.transform(opq.pack, _.unpack)
 
 given JsonEncoder[Unit] = new JsonEncoder[Unit] {
   override def unsafeEncode(a: Unit, indent: Option[Int], out: Write): Unit = out.write(Json.Obj().toString)
