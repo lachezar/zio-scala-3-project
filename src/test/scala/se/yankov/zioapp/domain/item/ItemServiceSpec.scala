@@ -24,8 +24,7 @@ object ItemServiceSpec extends MockSpecDefault:
   val uuid0           = new UUID(0, 0)
   val uuid1           = new UUID(0, 1)
   val exampleItem     = Item(ItemId(uuid0), "lego", Money(99), ProductType.Toys)
-  val updateItemInput =
-    UpdateItemInput[ValidationStatus.Validated.type]("gameboy", Money(50), ProductType.Electronics.toString)
+  val updateItemInput = UpdateItemInput[ValidationStatus.Validated.type]("gameboy", Money(50), ProductType.Electronics)
 
   val getItemMock: ULayer[ItemRepository] = ItemRepoMock.GetById(
     equalTo(ItemId(uuid0)),
@@ -38,13 +37,7 @@ object ItemServiceSpec extends MockSpecDefault:
   def updateMock(data: UpdateItemInput[ValidationStatus.Validated.type]): ULayer[ItemRepository] =
     ItemRepoMock.Update(
       hasField("id", _._1, equalTo(exampleItem.id)),
-      value(
-        data
-          .into[Item]
-          .withFieldConst(_.id, exampleItem.id)
-          .withFieldComputed(_.productType, data => ProductType.valueOf(data.productType))
-          .transform
-      ),
+      value(data.into[Item].withFieldConst(_.id, exampleItem.id).transform),
     ) ++ ItemRepoMock.Update(
       hasField("id", _._1, equalTo(ItemId(uuid1))),
       failure(RepositoryError.MissingEntity()),

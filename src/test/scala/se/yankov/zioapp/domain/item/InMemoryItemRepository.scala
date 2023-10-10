@@ -37,11 +37,7 @@ final class InMemoryItemRepository(storeRef: Ref[Map[ItemId, Item]]) extends Ite
       .modify { store =>
         if (!store.contains(id)) (None, store)
         else {
-          val updatedItem = data
-            .into[Item]
-            .withFieldConst(_.id, id)
-            .withFieldComputed(_.productType, data => ProductType.valueOf(data.productType))
-            .transform
+          val updatedItem = data.into[Item].withFieldConst(_.id, id).transform
           (Some(updatedItem), store.updated(id, updatedItem))
         }
       }

@@ -14,13 +14,7 @@ final case class ItemService(itemRepo: ItemRepository, eventPublisher: EventPubl
       : IO[RepositoryError.DbEx | RepositoryError.Conflict | RepositoryError.ConversionError | EventError, Item] =
     for {
       uuid <- zio.Random.nextUUID
-      item <- itemRepo.add(
-                input
-                  .into[Item]
-                  .withFieldConst(_.id, ItemId(uuid))
-                  .withFieldComputed(_.productType, i => ProductType.valueOf(i.productType))
-                  .transform
-              )
+      item <- itemRepo.add(input.into[Item].withFieldConst(_.id, ItemId(uuid)).transform)
       _    <- eventPublisher.sendNewItemEvent(item)
     } yield item
 

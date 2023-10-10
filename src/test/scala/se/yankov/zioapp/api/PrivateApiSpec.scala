@@ -25,8 +25,7 @@ import java.util.UUID
 object PrivateApiSpec extends ZIOSpecDefault:
 
   private val uuid0           = new UUID(0, 0)
-  private val createItemInput =
-    CreateItemInput[ValidationStatus.NonValidated.type]("lego", Money(35), ProductType.Toys.toString)
+  private val createItemInput = CreateItemInput[ValidationStatus.NonValidated.type]("lego", Money(35), ProductType.Toys)
   private val item            = Item(ItemId(uuid0), "lego", Money(35), ProductType.Toys)
 
   val specs = suite("private http")(

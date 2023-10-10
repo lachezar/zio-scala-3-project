@@ -56,11 +56,7 @@ object ItemRepositoryImplementationSpec extends ZIOSpecDefault:
       for {
         _    <- ItemRepository.update(
                   itemId3,
-                  UpdateItemInput[ValidationStatus.Validated.type](
-                    "updated item",
-                    Money(3),
-                    ProductType.VideoGames.toString,
-                  ),
+                  UpdateItemInput[ValidationStatus.Validated.type]("updated item", Money(3), ProductType.VideoGames),
                 )
         item <- ItemRepository.getById(itemId3)
       } yield assert(item.id)(equalTo(itemId3)) &&

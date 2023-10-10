@@ -84,7 +84,7 @@ final class ItemRepositoryImplementation(dataSource: DataSource) extends ItemRep
           .update(
             _.name        -> lift(data.name),
             _.price       -> lift(data.price.value),
-            _.productType -> lift(data.productType),
+            _.productType -> lift(data.productType.toString),
           )
           .returningMany(r => r)
       }

@@ -31,7 +31,7 @@ object ItemValidator:
       .validateWith(
         Validation.fromEither(validateName(input.name)),
         Validation.fromEither(validatePrice(input.price)),
-        Validation.fromEither(validateProductType(input.productType)),
+        Validation.succeed(input.productType),
       )(CreateItemInput[ValidationStatus.Validated.type].apply)
       .toEither
 
@@ -41,6 +41,6 @@ object ItemValidator:
       .validateWith(
         Validation.fromEither(validateName(input.name)),
         Validation.fromEither(validatePrice(input.price)),
-        Validation.fromEither(validateProductType(input.productType)),
+        Validation.succeed(input.productType),
       )(UpdateItemInput[ValidationStatus.Validated.type].apply)
       .toEither

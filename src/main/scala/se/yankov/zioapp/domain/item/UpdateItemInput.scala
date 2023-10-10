@@ -4,4 +4,4 @@ package item
 
 import common.Money
 
-final case class UpdateItemInput[V <: ValidationStatus](name: String, price: Money, productType: String)
+final case class UpdateItemInput[V <: ValidationStatus](name: String, price: Money, productType: ProductType)
