@@ -12,4 +12,4 @@ final case class InternalApiHandler(itemService: ItemService):
     itemService.getAllItems.flatMap(items => ZIO.foreachDiscard(items)(i => itemService.deleteItem(i.id)))
 
 object InternalApiHandler:
-  def layer: RLayer[ItemService, InternalApiHandler] = ZLayer.derive[InternalApiHandler]
+  val layer: RLayer[ItemService, InternalApiHandler] = ZLayer.derive[InternalApiHandler]

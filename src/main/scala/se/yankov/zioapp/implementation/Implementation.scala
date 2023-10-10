@@ -14,5 +14,5 @@ import postgres.*
 
 type ImplementationEnv = AuthService & ItemRepository & EventPublisher
 
-def layer: RLayer[DbConfig & KafkaConfig, ImplementationEnv] =
+val layer: RLayer[DbConfig & KafkaConfig, ImplementationEnv] =
   PostgresDataSource.layer >>> ItemRepositoryImplementation.layer ++ AuthService.layer ++ EventPublisherImplementation.layer

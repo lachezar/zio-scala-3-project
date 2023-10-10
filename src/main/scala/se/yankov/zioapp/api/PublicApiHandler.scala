@@ -24,4 +24,4 @@ final case class PublicApiHandler(itemService: ItemService):
       .flatMap(id => itemService.getItemById(ItemId(id)).map(ItemResult.fromDomain(_)))
 
 object PublicApiHandler:
-  def layer: RLayer[ItemService, PublicApiHandler] = ZLayer.derive[PublicApiHandler]
+  val layer: RLayer[ItemService, PublicApiHandler] = ZLayer.derive[PublicApiHandler]

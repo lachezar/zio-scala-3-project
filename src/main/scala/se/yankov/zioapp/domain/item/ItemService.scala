@@ -49,4 +49,4 @@ object ItemService:
       : ZIO[ItemService, RepositoryError.DbEx | RepositoryError.MissingEntity | RepositoryError.ConversionError, Item] =
     ZIO.serviceWithZIO[ItemService](_.updateItem(id, input))
 
-  def layer: RLayer[ItemRepository & EventPublisher, ItemService] = ZLayer.derive[ItemService]
+  val layer: RLayer[ItemRepository & EventPublisher, ItemService] = ZLayer.derive[ItemService]

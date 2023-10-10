@@ -24,6 +24,6 @@ final case class EventPublisherImplementation(kafkaConfig: KafkaConfig, producer
       .unit
 
 object EventPublisherImplementation:
-  def layer: RLayer[KafkaConfig, EventPublisher] = ZLayer.scoped(
+  val layer: RLayer[KafkaConfig, EventPublisher] = ZLayer.scoped(
     ZIO.serviceWithZIO[KafkaConfig](config => Producer.make(ProducerSettings(config.bootstrapServers)))
   ) >>> ZLayer.derive[EventPublisherImplementation]

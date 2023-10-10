@@ -51,4 +51,4 @@ final case class PrivateApiHandler(authService: AuthService, itemService: ItemSe
         .flatMap(id => itemService.getItemById(ItemId(id)).map(ItemResult.fromDomain(_)))
 
 object PrivateApiHandler:
-  def layer: RLayer[AuthService & ItemService, PrivateApiHandler] = ZLayer.derive[PrivateApiHandler]
+  val layer: RLayer[AuthService & ItemService, PrivateApiHandler] = ZLayer.derive[PrivateApiHandler]
