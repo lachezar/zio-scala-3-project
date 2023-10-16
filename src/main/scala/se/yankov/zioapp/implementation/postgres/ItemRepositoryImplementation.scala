@@ -34,7 +34,7 @@ final class ItemRepositoryImplementation(dataSource: DataSource) extends ItemRep
       : IO[RepositoryError.DbEx | RepositoryError.Conflict | RepositoryError.ConversionError, Item] =
     DbContext
       .run {
-        query[ItemEntity].insertValue(lift(ItemEntity.fromDomain(item))).returning(r => r)
+        query[ItemEntity].insertValue(lift(ItemEntity.fromDomain(item))).returning(identity)
       }
       .implicitDS
       .mapError(_.toDbExOrConflict)
@@ -78,7 +78,7 @@ final class ItemRepositoryImplementation(dataSource: DataSource) extends ItemRep
             _.price       -> lift(data.price),
             _.productType -> lift(data.productType.toString),
           )
-          .returningMany(r => r)
+          .returningMany(identity)
       }
       .implicitDS
       .mapError(_.toDbEx)

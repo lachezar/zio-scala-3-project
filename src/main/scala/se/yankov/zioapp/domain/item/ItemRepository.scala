@@ -6,7 +6,7 @@ import zio.*
 
 import RepositoryError.*
 
-trait ItemRepository:
+trait ItemRepository extends Repository:
 
   def add(item: Item): IO[DbEx | Conflict | ConversionError, Item]
 
