@@ -16,20 +16,12 @@ import io.getquill.context.ZioJdbc.*
 import io.getquill.context.qzio.ImplicitSyntax.Implicit
 import io.scalaland.chimney.dsl.*
 
-final case class ItemEntity(id: ItemId, name: String, price: BigDecimal, productType: String):
+final case class ItemEntity(id: ItemId, name: String, price: Money, productType: String):
   def toDomain: Option[Item] =
-    ProductType
-      .valueOfOption(productType)
-      .map(pt =>
-        this.into[Item].withFieldComputed(_.price, i => Money(i.price)).withFieldConst(_.productType, pt).transform
-      )
+    ProductType.valueOfOption(productType).map(pt => this.into[Item].withFieldConst(_.productType, pt).transform)
 
 object ItemEntity:
-  def fromDomain(item: Item) = item
-    .into[ItemEntity]
-    .withFieldComputed(_.price, x => x.price.value)
-    .withFieldComputed(_.productType, _.productType.toString)
-    .transform
+  def fromDomain(item: Item) = item.into[ItemEntity].withFieldComputed(_.productType, _.productType.toString).transform
 
 final class ItemRepositoryImplementation(dataSource: DataSource) extends ItemRepository:
 
@@ -83,7 +75,7 @@ final class ItemRepositoryImplementation(dataSource: DataSource) extends ItemRep
           .filter(_.id == lift(id))
           .update(
             _.name        -> lift(data.name),
-            _.price       -> lift(data.price.value),
+            _.price       -> lift(data.price),
             _.productType -> lift(data.productType.toString),
           )
           .returningMany(r => r)
