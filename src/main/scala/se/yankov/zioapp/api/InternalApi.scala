@@ -4,7 +4,6 @@ package api
 import zio.*
 import zio.http.*
 
-import api.InternalApiHandler
 import implementation.json.given
 
 object InternalApi:

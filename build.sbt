@@ -62,6 +62,9 @@ lazy val root = (project in file("."))
     testFrameworks          := Seq(new TestFramework("zio.test.sbt.ZTestFramework")),
     scalacOptions ++= Seq(
       // define any compiler options here
+      "-Wvalue-discard",
+      "-Wunused:all",
+      "-Wnonunit-statement",
     ),
     Compile / doc / sources := Seq.empty,
   )

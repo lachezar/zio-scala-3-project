@@ -1,9 +1,7 @@
 package se.yankov.zioapp
 
 import zio.*
-import zio.config.*
 import zio.http.*
-import zio.http.Path.*
 import zio.http.netty.NettyConfig
 import zio.logging.backend.SLF4J
 

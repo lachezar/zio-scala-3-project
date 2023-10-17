@@ -8,7 +8,6 @@ import zio.json.*
 
 import domain.*
 import domain.events.EventError
-import domain.item.*
 import implementation.auth.AuthError
 import implementation.json.JsonDecodingError
 

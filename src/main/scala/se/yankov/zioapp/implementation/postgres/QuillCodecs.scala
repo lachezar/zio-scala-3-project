@@ -2,8 +2,6 @@ package se.yankov.zioapp
 package implementation
 package postgres
 
-import zio.json.JsonEncoder
-
 import java.sql.Types
 import java.util.UUID
 

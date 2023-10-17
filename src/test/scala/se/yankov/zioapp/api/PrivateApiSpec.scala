@@ -3,12 +3,8 @@ package api
 
 import zio.*
 import zio.http.*
-import zio.http.Path.*
 import zio.json.*
-import zio.json.ast.Json
-import zio.mock.*
 import zio.test.*
-import zio.test.Assertion.*
 import zio.test.TestAspect.*
 
 import api.item.ItemResult
@@ -40,7 +36,7 @@ object PrivateApiSpec extends ZIOSpecDefault:
                   .post(Body.fromString(createItemInput.toJson), URL(Root / "items"))
                   .addHeader(Header.ContentType(MediaType.application.json))
               )
-        assertZIO(actual.map(_.status))(equalTo(Status.Unauthorized))
+        assertZIO(actual.map(_.status))(Assertion.equalTo(Status.Unauthorized))
       },
       test("create item") {
         val actual =
@@ -53,7 +49,7 @@ object PrivateApiSpec extends ZIOSpecDefault:
                   .addHeader(Header.Authorization.Bearer("token"))
                   .addHeader(Header.ContentType(MediaType.application.json))
               )
-        assertZIO(actual)(equalTo(Response.json(ItemResult.fromDomain(item).toJson)))
+        assertZIO(actual)(Assertion.equalTo(Response.json(ItemResult.fromDomain(item).toJson)))
       },
       test("view item") {
         val actual =
@@ -65,7 +61,7 @@ object PrivateApiSpec extends ZIOSpecDefault:
                 .addHeader(Header.Authorization.Bearer("token"))
                 .addHeader(Header.ContentType(MediaType.application.json))
             )
-        assertZIO(actual)(equalTo(Response.json(ItemResult.fromDomain(item).toJson)))
+        assertZIO(actual)(Assertion.equalTo(Response.json(ItemResult.fromDomain(item).toJson)))
       },
       test("delete item") {
         val actual =
@@ -77,7 +73,7 @@ object PrivateApiSpec extends ZIOSpecDefault:
                 .addHeader(Header.Authorization.Bearer("token"))
                 .addHeader(Header.ContentType(MediaType.application.json))
             )
-        assertZIO(actual)(equalTo(Response.json(().toJson)))
+        assertZIO(actual)(Assertion.equalTo(Response.json(().toJson)))
       },
     )
   ) @@ sequential

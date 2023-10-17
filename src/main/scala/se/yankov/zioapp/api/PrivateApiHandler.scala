@@ -3,7 +3,6 @@ package api
 
 import zio.*
 
-import api.PrivateApiHandler
 import api.item.*
 import domain.*
 import domain.events.EventError

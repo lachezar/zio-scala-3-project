@@ -1,7 +1,6 @@
 package se.yankov.zioapp
 
 import zio.*
-import zio.config.ReadError
 import zio.config.magnolia.descriptor
 import zio.config.syntax.*
 import zio.config.toKebabCase

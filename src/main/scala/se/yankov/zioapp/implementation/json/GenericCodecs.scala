@@ -6,8 +6,6 @@ import zio.json.{ JsonCodec, JsonEncoder }
 import zio.json.ast.Json
 import zio.json.internal.Write
 
-import java.util.UUID
-
 given [In, Out](using opq: Opq[In, Out], codec: JsonCodec[In]): JsonCodec[Out] = codec.transform(opq.pack, _.unpack)
 
 given JsonEncoder[Unit] = new JsonEncoder[Unit] {

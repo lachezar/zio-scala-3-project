@@ -3,10 +3,7 @@ package api
 
 import zio.*
 import zio.http.*
-import zio.http.Path.*
-import zio.mock.*
 import zio.test.*
-import zio.test.Assertion.*
 
 import domain.events.*
 import domain.item.*
@@ -18,7 +15,7 @@ object PublicApiSpec extends ZIOSpecDefault:
       test("ok status") {
         val actual =
           PublicApi.api.runZIO(Request.get(URL(Root / "health")))
-        assertZIO(actual)(equalTo(Response.text("ok")))
+        assertZIO(actual)(Assertion.equalTo(Response.text("ok")))
       }
     )
   )

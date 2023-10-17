@@ -4,7 +4,6 @@ package postgres
 
 import zio.*
 import zio.test.*
-import zio.test.Assertion.*
 import zio.test.TestAspect.*
 
 import domain.*
@@ -14,8 +13,6 @@ import domain.item.*
 import java.util.UUID
 
 import com.dimafeng.testcontainers.PostgreSQLContainer
-import io.getquill.Literal
-import io.getquill.jdbczio.Quill
 
 object ItemRepositoryImplementationSpec extends ZIOSpecDefault:
 
@@ -30,27 +27,27 @@ object ItemRepositoryImplementationSpec extends ZIOSpecDefault:
         item1 <- ItemRepository.add(Item(itemId1, "first item", Money(1), ProductType.Clothes))
         item2 <- ItemRepository.add(Item(itemId2, "second item", Money(2), ProductType.Electronics))
         item3 <- ItemRepository.add(Item(itemId3, "third item", Money(3), ProductType.Toys))
-      } yield assert(item1.id)(equalTo(itemId1)) && assert(item2.id)(equalTo(itemId2)) && assert(item3.id)(
-        equalTo(itemId3)
-      )
+      } yield assert(item1.id)(Assertion.equalTo(itemId1)) &&
+      assert(item2.id)(Assertion.equalTo(itemId2)) &&
+      assert(item3.id)(Assertion.equalTo(itemId3))
     },
     test("get all returns 3 items") {
       for {
         items <- ItemRepository.getAll
-      } yield assert(items)(hasSize(equalTo(3)))
+      } yield assert(items)(Assertion.hasSize(Assertion.equalTo(3)))
     },
     test("delete first item") {
       for {
         _    <- ItemRepository.delete(itemId1)
         item <- ItemRepository.getById(itemId1).exit
-      } yield assert(item)(failsWithA[RepositoryError.MissingEntity])
+      } yield assert(item)(Assertion.failsWithA[RepositoryError.MissingEntity])
     },
     test("get item 2") {
       for {
         item <- ItemRepository.getById(itemId2)
-      } yield assert(item.id)(equalTo(itemId2)) &&
-      assert(item.name)(equalTo("second item")) &&
-      assert(item.price)(equalTo(Money(2)))
+      } yield assert(item.id)(Assertion.equalTo(itemId2)) &&
+      assert(item.name)(Assertion.equalTo("second item")) &&
+      assert(item.price)(Assertion.equalTo(Money(2)))
     },
     test("update item 3") {
       for {
@@ -59,10 +56,10 @@ object ItemRepositoryImplementationSpec extends ZIOSpecDefault:
                   UpdateItemInput[ValidationStatus.Validated.type]("updated item", Money(3), ProductType.VideoGames),
                 )
         item <- ItemRepository.getById(itemId3)
-      } yield assert(item.id)(equalTo(itemId3)) &&
-      assert(item.name)(equalTo("updated item")) &&
-      assert(item.price)(equalTo(Money(3))) &&
-      assert(item.productType)(equalTo(ProductType.VideoGames))
+      } yield assert(item.id)(Assertion.equalTo(itemId3)) &&
+      assert(item.name)(Assertion.equalTo("updated item")) &&
+      assert(item.price)(Assertion.equalTo(Money(3))) &&
+      assert(item.productType)(Assertion.equalTo(ProductType.VideoGames))
     },
   ) @@ sequential @@ beforeAll(Migration.run)).provideShared(
     containerLayer,
