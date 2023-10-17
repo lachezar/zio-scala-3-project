@@ -60,12 +60,7 @@ lazy val root = (project in file("."))
       "dev.zio"      %% "zio-test-magnolia"               % zioVersion            % Test,
     ),
     testFrameworks          := Seq(new TestFramework("zio.test.sbt.ZTestFramework")),
-    scalacOptions ++= Seq(
-      // define any compiler options here
-      "-Wvalue-discard",
-      "-Wunused:all",
-      "-Wnonunit-statement",
-    ),
+    // try using the `tpolecatScalacOptions` configuration key for any additional compiler flags
     Compile / doc / sources := Seq.empty,
   )
   .dependsOn(quillNamingStrategy)
