@@ -13,4 +13,4 @@ object ItemCodecs:
   given JsonCodec[UpdateItemInput[ValidationStatus.NonValidated.type]] =
     DeriveJsonCodec.gen[UpdateItemInput[ValidationStatus.NonValidated.type]]
   given JsonCodec[ProductType]                                         =
-    JsonCodec[String].transformOrFail(ProductType.valueOfEither(_).left.map(_.getMessage), _.toString)
+    JsonCodec[String].transformOrFail(ProductType.valueOfEither(_), _.toString)
