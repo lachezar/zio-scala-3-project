@@ -4,10 +4,12 @@
 target/
 project/project/
 project/target/
+project/.bloop/
 project/metals.sbt
 logs/
 .bsp/
 .metals/
+.bloop/
 .vscode/
 postgres-data/
 sbt-launch.jar

@@ -4,15 +4,19 @@ package api
 import zio.*
 import zio.http.*
 
+import java.util.UUID
+
 object PublicApi:
 
-  val api: Http[PublicApiHandler, Nothing, Request, Response] =
-    Http.collectZIO[Request] {
-      case Method.GET -> Root / "health" => ZIO.serviceWithZIO[PublicApiHandler](_.health).toTextResponse
-    } ++
-      Http.collectZIO[Request] {
-        case Method.GET -> Root / "items"      =>
-          ZIO.serviceWithZIO[PublicApiHandler](_.listItems).toJsonResponse.handleErrors
-        case Method.GET -> Root / "items" / id =>
-          ZIO.serviceWithZIO[PublicApiHandler](_.getItem(id)).toJsonResponse.handleErrors
-      } @@ requireContentType
+  val api: HttpApp[PublicApiHandler] =
+    Routes(
+      Method.GET / "health" -> handler(ZIO.serviceWithZIO[PublicApiHandler](_.health).toTextResponse)
+    ).toHttpApp ++
+      Routes(
+        Method.GET / "items"              ->
+          handler(ZIO.serviceWithZIO[PublicApiHandler](_.listItems).toJsonResponse.handleErrors),
+        Method.GET / "items" / uuid("id") ->
+          handler { (id: UUID, _: Request) =>
+            ZIO.serviceWithZIO[PublicApiHandler](_.getItem(id)).toJsonResponse.handleErrors
+          },
+      ).toHttpApp @@ requireContentType

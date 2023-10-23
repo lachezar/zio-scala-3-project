@@ -21,33 +21,24 @@ final case class PrivateApiHandler(authService: AuthService, itemService: ItemSe
       item           <- itemService.addItem(validatedInput)
     } yield ItemResult.fromDomain(item)
 
-  def updateItem(authHeader: Option[String], id: String, input: UpdateItemInput[ValidationStatus.NonValidated.type])
-      : IO[
-        AuthError | RequestError | RepositoryError.DbEx | RepositoryError.MissingEntity | RepositoryError.ConversionError | NonEmptyChunk[ItemValidationError],
-        ItemResult,
-      ] =
+  def updateItem(authHeader: Option[String], id: UUID, input: UpdateItemInput[ValidationStatus.NonValidated.type]): IO[
+    AuthError | RequestError | RepositoryError.DbEx | RepositoryError.MissingEntity | RepositoryError.ConversionError | NonEmptyChunk[ItemValidationError],
+    ItemResult,
+  ] =
     for {
       _              <- authService.validateJwt(authHeader.getOrElse(""))
-      itemId         <- ZIO.attempt(UUID.fromString(id)).mapBoth(err => RequestError(Some(err.getMessage)), ItemId(_))
       validatedInput <- ZIO.fromEither(ItemValidator.validate(input))
-      item           <- itemService.updateItem(itemId, validatedInput)
+      item           <- itemService.updateItem(ItemId(id), validatedInput)
     } yield ItemResult.fromDomain(item)
 
-  def deleteItem(authHeader: Option[String], id: String)
+  def deleteItem(authHeader: Option[String], id: UUID)
       : IO[AuthError | RequestError | RepositoryError.DbEx | RepositoryError.MissingEntity, Unit] =
-    authService.validateJwt(authHeader.getOrElse("")) *>
-      ZIO
-        .attempt(UUID.fromString(id))
-        .mapError(err => RequestError(Some(err.getMessage)))
-        .flatMap(id => itemService.deleteItem(ItemId(id)))
+    authService.validateJwt(authHeader.getOrElse("")) *> itemService.deleteItem(ItemId(id))
 
-  def getItem(authHeader: Option[String], id: String)
+  def getItem(authHeader: Option[String], id: UUID)
       : IO[AuthError | RepositoryError.DbEx | RepositoryError.MissingEntity | RepositoryError.ConversionError | RequestError, ItemResult] =
-    authService.validateJwt(authHeader.getOrElse("")) *>
-      ZIO
-        .attempt(UUID.fromString(id))
-        .mapError(err => RequestError(Some(err.getMessage)))
-        .flatMap(id => itemService.getItemById(ItemId(id)).map(ItemResult.fromDomain(_)))
+    authService
+      .validateJwt(authHeader.getOrElse("")) *> itemService.getItemById(ItemId(id)).map(ItemResult.fromDomain(_))
 
 object PrivateApiHandler:
   val layer: RLayer[AuthService & ItemService, PrivateApiHandler] = ZLayer.derive[PrivateApiHandler]

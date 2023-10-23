@@ -11,7 +11,7 @@ import implementation.postgres.Migration
 object ZioApp extends ZIOAppDefault:
 
   private def publicApiProgram(port: Int): RIO[PublicApiHandler, Nothing] =
-    (ZIO.serviceWithZIO[PublicApiHandler](handlers => Server.install(PublicApi.api.withDefaultErrorResponse)) *>
+    (ZIO.serviceWithZIO[PublicApiHandler](handlers => Server.install(PublicApi.api)) *>
       ZIO.logDebug(s"Public API server started on port $port") *>
       ZIO.never)
       .provideSomeLayer(
@@ -21,7 +21,7 @@ object ZioApp extends ZIOAppDefault:
       )
 
   private def privateApiProgram(port: Int): RIO[PrivateApiHandler, Nothing] =
-    (ZIO.serviceWithZIO[PrivateApiHandler](handlers => Server.install(PrivateApi.api.withDefaultErrorResponse)) *>
+    (ZIO.serviceWithZIO[PrivateApiHandler](handlers => Server.install(PrivateApi.api)) *>
       ZIO.logDebug(s"Private API server started on port $port") *>
       ZIO.never)
       .provideSomeLayer(
@@ -31,7 +31,7 @@ object ZioApp extends ZIOAppDefault:
       )
 
   private def internalApiProgram(port: Int): RIO[InternalApiHandler, Nothing] =
-    (ZIO.serviceWithZIO[InternalApiHandler](handlers => Server.install(InternalApi.api.withDefaultErrorResponse)) *>
+    (ZIO.serviceWithZIO[InternalApiHandler](handlers => Server.install(InternalApi.api)) *>
       ZIO.logDebug(s"Internal API server started on port $port") *>
       ZIO.never)
       .provideSomeLayer(

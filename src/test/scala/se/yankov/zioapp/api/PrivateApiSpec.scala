@@ -33,7 +33,7 @@ object PrivateApiSpec extends ZIOSpecDefault:
               .api
               .runZIO(
                 Request
-                  .post(Body.fromString(createItemInput.toJson), URL(Root / "items"))
+                  .post(URL(Root / "items"), Body.fromString(createItemInput.toJson))
                   .addHeader(Header.ContentType(MediaType.application.json))
               )
         assertZIO(actual.map(_.status))(Assertion.equalTo(Status.Unauthorized))
@@ -45,7 +45,7 @@ object PrivateApiSpec extends ZIOSpecDefault:
               .api
               .runZIO(
                 Request
-                  .post(Body.fromString(createItemInput.toJson), URL(Root / "items"))
+                  .post(URL(Root / "items"), Body.fromString(createItemInput.toJson))
                   .addHeader(Header.Authorization.Bearer("token"))
                   .addHeader(Header.ContentType(MediaType.application.json))
               )

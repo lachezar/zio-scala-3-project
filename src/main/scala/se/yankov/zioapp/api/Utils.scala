@@ -3,7 +3,6 @@ package api
 
 import zio.*
 import zio.http.*
-import zio.http.HttpAppMiddleware.Allow
 import zio.json.*
 
 import domain.*
@@ -18,7 +17,7 @@ extension (request: Request)
     .mapError(err => RequestError(Some(err.getMessage)))
     .flatMap(input => ZIO.fromEither(input.fromJson[A]).mapError(JsonDecodingError(_)))
 
-extension [R, E](effect: ZIO[R, E, String]) def toTextResponse: ZIO[R, E, Response] = effect.map(Response.text(_))
+extension [R, E](effect: URIO[R, String]) def toTextResponse: URIO[R, Response] = effect.map(Response.text(_))
 
 extension [R, E, A: JsonEncoder](effect: ZIO[R, E, A])
   def toJsonResponse: ZIO[R, E, Response] = effect.map(x => Response.json(x.toJson))
@@ -51,5 +50,7 @@ extension [R](
       case err                                        => ZIO.succeed(ErrorResponse.internalServerError)
     }
 
-val requireContentType: HttpAppMiddleware[Nothing, Any, Nothing, Any] =
-  Allow(()).apply(req => req.headers.get(Header.ContentType).exists(_.mediaType == MediaType.application.json))
+val requireContentType =
+  HandlerAspect
+    .Allow(())
+    .apply(req => req.headers.get(Header.ContentType).exists(_.mediaType == MediaType.application.json))

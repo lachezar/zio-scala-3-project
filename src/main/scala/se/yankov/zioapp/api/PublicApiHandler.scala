@@ -16,12 +16,9 @@ final case class PublicApiHandler(itemService: ItemService):
   def listItems: IO[RepositoryError.DbEx, List[ItemResult]] =
     itemService.getAllItems.map(_.map(ItemResult.fromDomain(_)))
 
-  def getItem(id: String)
+  def getItem(id: UUID)
       : IO[RepositoryError.DbEx | RepositoryError.MissingEntity | RepositoryError.ConversionError | RequestError, ItemResult] =
-    ZIO
-      .attempt(UUID.fromString(id))
-      .mapError(err => RequestError(Some(err.getMessage)))
-      .flatMap(id => itemService.getItemById(ItemId(id)).map(ItemResult.fromDomain(_)))
+    itemService.getItemById(ItemId(id)).map(ItemResult.fromDomain(_))
 
 object PublicApiHandler:
   val layer: RLayer[ItemService, PublicApiHandler] = ZLayer.derive[PublicApiHandler]
