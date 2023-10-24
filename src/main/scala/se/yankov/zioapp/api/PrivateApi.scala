@@ -5,7 +5,7 @@ import zio.*
 import zio.http.*
 
 import domain.ValidationStatus
-import domain.item.{ CreateItemInput, UpdateItemInput }
+import domain.item.{ CreateItemInput, ItemId, UpdateItemInput }
 import implementation.json.ItemCodecs.given
 import implementation.json.given
 
@@ -15,7 +15,7 @@ object PrivateApi:
 
   val api: HttpApp[PrivateApiHandler] =
     Routes(
-      Method.POST / "items"                ->
+      Method.POST / "items"                             ->
         handler { (req: Request) =>
           req
             .parseRequest[CreateItemInput[ValidationStatus.NonValidated.type]]
@@ -23,20 +23,20 @@ object PrivateApi:
             .toJsonResponse
             .handleErrors
         },
-      Method.GET / "items" / uuid("id")    ->
-        handler { (id: UUID, req: Request) =>
+      Method.GET / "items" / pathCodec[UUID, ItemId]    ->
+        handler { (id: ItemId, req: Request) =>
           ZIO.serviceWithZIO[PrivateApiHandler](_.getItem(req.authHeader, id)).toJsonResponse.handleErrors
         },
-      Method.PUT / "items" / uuid("id")    ->
-        handler { (id: UUID, req: Request) =>
+      Method.PUT / "items" / pathCodec[UUID, ItemId]    ->
+        handler { (id: ItemId, req: Request) =>
           req
             .parseRequest[UpdateItemInput[ValidationStatus.NonValidated.type]]
             .flatMap(input => ZIO.serviceWithZIO[PrivateApiHandler](_.updateItem(req.authHeader, id, input)))
             .toJsonResponse
             .handleErrors
         },
-      Method.DELETE / "items" / uuid("id") ->
-        handler { (id: UUID, req: Request) =>
+      Method.DELETE / "items" / pathCodec[UUID, ItemId] ->
+        handler { (id: ItemId, req: Request) =>
           ZIO.serviceWithZIO[PrivateApiHandler](_.deleteItem(req.authHeader, id)).toJsonResponse.handleErrors
         },
     ).toHttpApp @@ requireContentType

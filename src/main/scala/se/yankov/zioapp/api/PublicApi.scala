@@ -4,6 +4,8 @@ package api
 import zio.*
 import zio.http.*
 
+import domain.item.ItemId
+
 import java.util.UUID
 
 object PublicApi:
@@ -13,10 +15,10 @@ object PublicApi:
       Method.GET / "health" -> handler(ZIO.serviceWithZIO[PublicApiHandler](_.health).toTextResponse)
     ).toHttpApp ++
       Routes(
-        Method.GET / "items"              ->
+        Method.GET / "items"                           ->
           handler(ZIO.serviceWithZIO[PublicApiHandler](_.listItems).toJsonResponse.handleErrors),
-        Method.GET / "items" / uuid("id") ->
-          handler { (id: UUID, _: Request) =>
+        Method.GET / "items" / pathCodec[UUID, ItemId] ->
+          handler { (id: ItemId, _: Request) =>
             ZIO.serviceWithZIO[PublicApiHandler](_.getItem(id)).toJsonResponse.handleErrors
           },
       ).toHttpApp @@ requireContentType
