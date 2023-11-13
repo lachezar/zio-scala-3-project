@@ -42,7 +42,6 @@ lazy val root = (project in file("."))
       "dev.zio"       %% "zio-config"                 % zioConfigVersion,
       "dev.zio"       %% "zio-config-typesafe"        % zioConfigVersion,
       "dev.zio"       %% "zio-config-magnolia"        % zioConfigVersion,
-      "ch.qos.logback" % "logback-classic"            % logbackClassicVersion,
       "dev.zio"       %% "zio-json"                   % zioJsonVersion,
       "io.scalaland"  %% "chimney"                    % chimneyVersion,
       "dev.zio"       %% "zio-prelude"                % zioPreludeVersion,
