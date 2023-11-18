@@ -1,17 +1,17 @@
-val zioVersion            = "2.0.18"
+val zioVersion            = "2.0.19"
 val zioHttpVersion        = "3.0.0-RC3"
 val zioKafkaVersion       = "2.6.0"
 val zioJsonVersion        = "0.6.2"
 val zioPreludeVersion     = "1.0.0-RC21"
 val zioConfigVersion      = "3.0.7"
-val zioLoggingVersion     = "2.1.14"
+val zioLoggingVersion     = "2.1.15"
 val logbackClassicVersion = "1.4.11"
 val quillVersion          = "4.8.0"
 val postgresqlVersion     = "42.6.0"
-val flywayVersion         = "10.0.0"
-val chimneyVersion        = "0.8.1"
+val flywayVersion         = "10.0.1"
+val chimneyVersion        = "0.8.2"
 val testContainersVersion = "0.41.0"
-val zioMockVersion        = "1.0.0-RC11"
+val zioMockVersion        = "1.0.0-RC12"
 
 lazy val quillNamingStrategy =
   (project in file("quill"))
