@@ -1,16 +1,16 @@
 val zioVersion            = "2.0.21"
 val zioHttpVersion        = "3.0.0-RC4"
-val zioKafkaVersion       = "2.7.1"
+val zioKafkaVersion       = "2.7.2"
 val zioJsonVersion        = "0.6.2"
-val zioPreludeVersion     = "1.0.0-RC21"
-val zioConfigVersion      = "4.0.0"
-val zioLoggingVersion     = "2.1.16"
-val logbackClassicVersion = "1.4.14"
-val quillVersion          = "4.8.0"
+val zioPreludeVersion     = "1.0.0-RC23"
+val zioConfigVersion      = "4.0.1"
+val zioLoggingVersion     = "2.2.2"
+val logbackClassicVersion = "1.5.0"
+val quillVersion          = "4.8.1"
 val postgresqlVersion     = "42.7.1"
-val flywayVersion         = "10.4.1"
+val flywayVersion         = "10.8.1"
 val chimneyVersion        = "0.8.5"
-val testContainersVersion = "0.41.0"
+val testContainersVersion = "0.41.3"
 val zioMockVersion        = "1.0.0-RC12"
 
 lazy val quillNamingStrategy =
@@ -25,7 +25,7 @@ lazy val root = (project in file("."))
     inThisBuild(
       List(
         organization := "se.yankov",
-        scalaVersion := "3.3.1",
+        scalaVersion := "3.3.2",
       )
     ),
     name                    := "zio-scala-3-project",
