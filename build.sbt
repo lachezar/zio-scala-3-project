@@ -1,5 +1,5 @@
 val zioVersion            = "2.0.21"
-val zioHttpVersion        = "3.0.0-RC4"
+val zioHttpVersion        = "3.0.0-RC6"
 val zioKafkaVersion       = "2.7.4"
 val zioJsonVersion        = "0.6.2"
 val zioPreludeVersion     = "1.0.0-RC23"
@@ -8,7 +8,7 @@ val zioLoggingVersion     = "2.2.2"
 val logbackClassicVersion = "1.5.3"
 val quillVersion          = "4.8.3"
 val postgresqlVersion     = "42.7.3"
-val flywayVersion         = "10.10.0"
+val flywayVersion         = "10.11.0"
 val chimneyVersion        = "0.8.5"
 val testContainersVersion = "0.41.3"
 val zioMockVersion        = "1.0.0-RC12"
@@ -25,7 +25,7 @@ lazy val root = (project in file("."))
     inThisBuild(
       List(
         organization := "se.yankov",
-        scalaVersion := "3.3.2",
+        scalaVersion := "3.3.3",
       )
     ),
     name                    := "zio-scala-3-project",
