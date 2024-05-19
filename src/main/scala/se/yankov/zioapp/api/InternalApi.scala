@@ -8,9 +8,9 @@ import implementation.json.given
 
 object InternalApi:
 
-  val api: HttpApp[InternalApiHandler] =
+  val api: Routes[InternalApiHandler, Nothing] =
     Routes(
       Method.DELETE / "items" -> handler {
         ZIO.serviceWithZIO[InternalApiHandler](_.deleteAllItems).toJsonResponse.handleErrors
       }
-    ).toHttpApp @@ requireContentType
+    ) @@ requireContentType

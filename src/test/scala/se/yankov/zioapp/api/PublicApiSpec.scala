@@ -14,7 +14,7 @@ object PublicApiSpec extends ZIOSpecDefault:
     suite("health check")(
       test("ok status") {
         val actual =
-          PublicApi.api.runZIO(Request.get(URL(Root / "health")))
+          PublicApi.api.runZIO(Request.get(URL(Path.root / "health")))
         assertZIO(actual)(Assertion.equalTo(Response.text("ok")))
       }
     )

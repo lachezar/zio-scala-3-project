@@ -13,7 +13,7 @@ import java.util.UUID
 
 object PrivateApi:
 
-  val api: HttpApp[PrivateApiHandler] =
+  val api: Routes[PrivateApiHandler, Nothing] =
     Routes(
       Method.POST / "items"                             ->
         handler { (req: Request) =>
@@ -39,7 +39,7 @@ object PrivateApi:
         handler { (id: ItemId, req: Request) =>
           ZIO.serviceWithZIO[PrivateApiHandler](_.deleteItem(req.authHeader, id)).toJsonResponse.handleErrors
         },
-    ).toHttpApp @@ requireContentType
+    ) @@ requireContentType
 
   extension (req: Request)
     def authHeader: Option[String] = req.headers(Header.Authorization).headOption.map(_.renderedValue)
