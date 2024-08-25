@@ -10,6 +10,8 @@ import implementation.postgres.Migration
 
 object ZioApp extends ZIOAppDefault:
 
+  override val bootstrap: ZLayer[ZIOAppArgs, Any, Any] = Runtime.removeDefaultLoggers >>> SLF4J.slf4j
+
   private def publicApiProgram(port: Int): RIO[PublicApiHandler, Nothing] =
     (ZIO.serviceWithZIO[PublicApiHandler](handlers => Server.install(PublicApi.api)) *>
       ZIO.logDebug(s"Public API server started on port $port") *>
@@ -44,9 +46,8 @@ object ZioApp extends ZIOAppDefault:
     (Migration.run *>
       ZIO.raceFirst(publicApiProgram(1337), privateApiProgram(1338) :: internalApiProgram(1339) :: Nil))
       .provide(
-        Runtime.removeDefaultLoggers >>> SLF4J.slf4j,
         AppConfig.layer >+>
-          (implementation.layer >+> domain.layer >>> (PublicApiHandler.layer ++ PrivateApiHandler.layer ++ InternalApiHandler.layer)),
+          (implementation.layer >+> domain.layer >>> (PublicApiHandler.layer ++ PrivateApiHandler.layer ++ InternalApiHandler.layer))
       )
       .foldCauseZIO(
         error => ZIO.logError(s"Program failed: ${error.squash.getMessage}") *> ZIO.succeed(ExitCode.failure),
