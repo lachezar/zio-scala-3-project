@@ -44,9 +44,9 @@ object ZioApp extends ZIOAppDefault:
     (Migration.run *>
       ZIO.raceFirst(publicApiProgram(1337), privateApiProgram(1338) :: internalApiProgram(1339) :: Nil))
       .provide(
-        (Runtime.removeDefaultLoggers >>> SLF4J.slf4j) ++
-          AppConfig.layer >+>
-          (implementation.layer >+> domain.layer >>> (PublicApiHandler.layer ++ PrivateApiHandler.layer ++ InternalApiHandler.layer))
+        Runtime.removeDefaultLoggers >>> SLF4J.slf4j,
+        AppConfig.layer >+>
+          (implementation.layer >+> domain.layer >>> (PublicApiHandler.layer ++ PrivateApiHandler.layer ++ InternalApiHandler.layer)),
       )
       .foldCauseZIO(
         error => ZIO.logError(s"Program failed: ${error.squash.getMessage}") *> ZIO.succeed(ExitCode.failure),
